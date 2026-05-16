@@ -1,4 +1,5 @@
-# Project: Todo Appgit 
+# Project: Todo Appgit /init
+
 
 ## What this is
 A full-stack todo app with user authentication and real-time sync.
