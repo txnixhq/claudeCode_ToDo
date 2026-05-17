@@ -32,6 +32,7 @@ class AuthRequest(BaseModel):
 
 class TodoCreate(BaseModel):
     title: str
+    priority: str = "medium"
 
 
 def base_headers() -> dict:
@@ -110,7 +111,7 @@ async def create_todo(body: TodoCreate, auth: dict = Depends(verify_token)):
         res = await client.post(
             f"{SUPABASE_URL}/rest/v1/todos",
             headers={**authed_headers(auth["token"]), "Prefer": "return=representation"},
-            json={"title": body.title, "user_id": auth["user"]["id"], "done": False},
+            json={"title": body.title, "user_id": auth["user"]["id"], "done": False, "priority": body.priority},
         )
     if res.status_code not in (200, 201):
         return {"data": None, "error": "Failed to create todo"}
