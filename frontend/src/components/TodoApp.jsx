@@ -18,10 +18,20 @@ export default function TodoApp({ token, onLogout }) {
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
   })
 
+  const apiFetch = async (url, options = {}) => {
+    const res = await fetch(url, { ...options, headers: authHeaders() })
+    if (res.status === 401) {
+      localStorage.removeItem('token')
+      onLogout()
+      return null
+    }
+    return res
+  }
+
   useEffect(() => {
-    fetch(`${API}/todos`, { headers: authHeaders() })
-      .then((r) => r.json())
-      .then((json) => { if (json.data) setTodos(json.data) })
+    apiFetch(`${API}/todos`)
+      .then((r) => r && r.json())
+      .then((json) => { if (json?.data) setTodos(json.data) })
   }, [])
 
   const addTodo = async (e) => {
@@ -29,13 +39,12 @@ export default function TodoApp({ token, onLogout }) {
     if (!title.trim()) return
     setAdding(true)
     try {
-      const res = await fetch(`${API}/todos`, {
+      const res = await apiFetch(`${API}/todos`, {
         method: 'POST',
-        headers: authHeaders(),
         body: JSON.stringify({ title: title.trim(), priority }),
       })
-      const json = await res.json()
-      if (json.data) {
+      const json = await res?.json()
+      if (json?.data) {
         setTodos((prev) => [...prev, json.data])
         setTitle('')
         setPriority('medium')
@@ -46,15 +55,15 @@ export default function TodoApp({ token, onLogout }) {
   }
 
   const toggleTodo = async (id) => {
-    const res = await fetch(`${API}/todos/${id}`, { method: 'PATCH', headers: authHeaders() })
-    const json = await res.json()
-    if (json.data) {
+    const res = await apiFetch(`${API}/todos/${id}`, { method: 'PATCH' })
+    const json = await res?.json()
+    if (json?.data) {
       setTodos((prev) => prev.map((t) => (t.id === id ? json.data : t)))
     }
   }
 
   const deleteTodo = async (id) => {
-    await fetch(`${API}/todos/${id}`, { method: 'DELETE', headers: authHeaders() })
+    await apiFetch(`${API}/todos/${id}`, { method: 'DELETE' })
     setTodos((prev) => prev.filter((t) => t.id !== id))
   }
 
