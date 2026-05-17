@@ -17,6 +17,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://claudecodetodo-production.up.railway.app",
+        "https://exemplary-motivation-production.up.railway.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
