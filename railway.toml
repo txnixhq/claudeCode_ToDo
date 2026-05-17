@@ -1,0 +1,16 @@
+# Railway monorepo — two services.
+#
+# In the Railway dashboard, create two services from this repo:
+#
+#   Service 1 — backend
+#     Root Directory: /backend
+#     This file:      /backend/railway.toml
+#     Env vars:       SUPABASE_URL, SUPABASE_ANON_KEY
+#
+#   Service 2 — frontend
+#     Root Directory: /frontend
+#     This file:      /frontend/railway.toml
+#     Env vars:       VITE_API_URL=<backend public URL from Railway>
+#
+# Railway reads the railway.toml from inside the service's root directory,
+# so each service gets its own config file (see backend/ and frontend/).

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import TodoItem from './TodoItem'
 
-const API = 'http://localhost:8000'
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export default function TodoApp({ token, onLogout }) {
   const [todos, setTodos] = useState([])
