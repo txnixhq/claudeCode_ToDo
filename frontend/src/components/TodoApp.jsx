@@ -13,13 +13,13 @@ export default function TodoApp({ token, onLogout }) {
   const [filter, setFilter] = useState('all')
   const [adding, setAdding] = useState(false)
 
-  const headers = {
+  const authHeaders = () => ({
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  })
 
   useEffect(() => {
-    fetch(`${API}/todos`, { headers })
+    fetch(`${API}/todos`, { headers: authHeaders() })
       .then((r) => r.json())
       .then((json) => { if (json.data) setTodos(json.data) })
   }, [])
@@ -31,7 +31,7 @@ export default function TodoApp({ token, onLogout }) {
     try {
       const res = await fetch(`${API}/todos`, {
         method: 'POST',
-        headers,
+        headers: authHeaders(),
         body: JSON.stringify({ title: title.trim(), priority }),
       })
       const json = await res.json()
@@ -46,7 +46,7 @@ export default function TodoApp({ token, onLogout }) {
   }
 
   const toggleTodo = async (id) => {
-    const res = await fetch(`${API}/todos/${id}`, { method: 'PATCH', headers })
+    const res = await fetch(`${API}/todos/${id}`, { method: 'PATCH', headers: authHeaders() })
     const json = await res.json()
     if (json.data) {
       setTodos((prev) => prev.map((t) => (t.id === id ? json.data : t)))
@@ -54,7 +54,7 @@ export default function TodoApp({ token, onLogout }) {
   }
 
   const deleteTodo = async (id) => {
-    await fetch(`${API}/todos/${id}`, { method: 'DELETE', headers })
+    await fetch(`${API}/todos/${id}`, { method: 'DELETE', headers: authHeaders() })
     setTodos((prev) => prev.filter((t) => t.id !== id))
   }
 
